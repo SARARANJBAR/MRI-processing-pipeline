@@ -1,0 +1,6 @@
+-r requirements.txt
+
+pydantic
+flake8
+
+

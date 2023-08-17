@@ -1,0 +1,7 @@
+# Package Overview
+package_name: MRI-processing-pipeline
+
+# Data Files
+test_image_file: test_orig_flair.nii.gz
+test_brainmask_file: test_orig_brain.nii.gz
+test_mloutput_file: test_ml_output.nii.gz
