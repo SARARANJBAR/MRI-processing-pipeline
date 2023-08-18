@@ -8,11 +8,11 @@ import numpy as np
 import SimpleITK as sitk
 from sklearn.pipeline import Pipeline
 
-from ..src.edema_maps_pipeline.processing import preprocessing
-from ..src.edema_maps_pipeline import preprocessing_pipline
-from ..src.edema_maps_pipeline.config.core import DATA_DIR, config
-from ..src.edema_maps_pipeline.processing.data_manager import load_image
-from ..src.edema_maps_pipeline.processing.data_manager import save_image
+from ..src.pipeline.processing import preprocessing
+from ..src.pipeline import preprocessing_steps
+from ..src.pipeline.config.core import DATA_DIR, config
+from ..src.pipeline.processing.data_manager import load_image
+from ..src.pipeline.processing.data_manager import save_image
 
 # Authors: Sara Ranjbar <ranjbar.sara@mayo.edu>
 
@@ -30,7 +30,7 @@ def test_brainmask_file():
     return load_image(impath)
 
 
-def test_preprocessing_step1_pipeline(test_image_file):
+def test_preprocessing_image(test_image_file):
 
     # this is an example case.
     # if you have an image with any spacing or size and you
@@ -38,11 +38,11 @@ def test_preprocessing_step1_pipeline(test_image_file):
     # normalization and skullstripping), what will you get?
 
     # Given
-    target_spacing = preprocessing_pipline.MLSPACING
-    target_size = preprocessing_pipline.MLSIZE
+    target_spacing = preprocessing_steps.MLSPACING
+    target_size = preprocessing_steps.MLSIZE
 
     # When
-    result = preprocessing_pipline.image_prep.transform(test_image_file)
+    result = preprocessing_steps.image_prep.transform(test_image_file)
 
     # Then
     assert isinstance(result, sitk.Image)
@@ -56,7 +56,7 @@ def test_preprocessing_step1_pipeline(test_image_file):
     save_image(result, savepath)
 
 
-def test_preprocessing_on_mask(test_brainmask_file):
+def test_preprocessing_mask(test_brainmask_file):
 
     # this is an example case.
     # if you have a brain mask with any spacing or size and you
@@ -64,11 +64,11 @@ def test_preprocessing_on_mask(test_brainmask_file):
     # what will you get?
 
     # Given
-    target_spacing = preprocessing_pipline.MLSPACING
-    target_size = preprocessing_pipline.MLSIZE
+    target_spacing = preprocessing_steps.MLSPACING
+    target_size = preprocessing_steps.MLSIZE
 
     # When
-    result = preprocessing_pipline.mask_prep.transform(test_brainmask_file)
+    result = preprocessing_steps.mask_prep.transform(test_brainmask_file)
 
     # Then
     assert isinstance(result, sitk.Image)
@@ -82,8 +82,7 @@ def test_preprocessing_on_mask(test_brainmask_file):
     save_image(result, savepath)
 
 
-def test_preprocessing_step1n2_pipeline(test_image_file,
-                                        test_brainmask_file):
+def test_preprocessing_image_and_mask(test_image_file, test_brainmask_file):
 
     # this is an example case.
     # if you have an image with any spacing or size and you pass it on
@@ -94,8 +93,8 @@ def test_preprocessing_step1n2_pipeline(test_image_file,
     # skullstripping model.
 
     # Given
-    img_st1 = preprocessing_pipline.image_prep.transform(test_image_file)
-    brain_st1 = preprocessing_pipline.image_prep.transform(test_brainmask_file)
+    img_st1 = preprocessing_steps.image_prep.transform(test_image_file)
+    brain_st1 = preprocessing_steps.image_prep.transform(test_brainmask_file)
 
     # When
     # Test for step 2 processing: normalization + skullstripping

@@ -6,10 +6,9 @@ import pytest
 
 import SimpleITK as sitk
 from sklearn.pipeline import Pipeline
-from ..src.edema_maps_pipeline.processing import preprocessing
-from ..src.edema_maps_pipeline.config.core import DATA_DIR, config
-from ..src.edema_maps_pipeline.processing.data_manager import load_image
-from ..src.edema_maps_pipeline.processing.data_manager import save_image
+from ..src.pipeline.processing import preprocessing
+from ..src.pipeline.config.core import DATA_DIR, config
+from ..src.pipeline.processing.data_manager import *
 
 # Authors: Sara Ranjbar <ranjbar.sara@mayo.edu>
 
@@ -20,7 +19,7 @@ def sample_ml_output():
     return load_image(impath)
 
 
-def test_postptocessing_pipeline(sample_ml_output):
+def test_postptocessing(sample_ml_output):
 
     # this is an example case.
     # if you have an image with base spacing below,
