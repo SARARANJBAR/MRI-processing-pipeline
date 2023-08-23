@@ -1,6 +1,7 @@
 """
-Here, we use sklearn and its transformer classes to define classes for
-MRI processing components.
+method-style functions are written as classes to take advantage of object
+-orientation in python as well as to allow us to use open-source ML pipelining
+packages for pipelining. Here, we use sklearn and its transformer classes.
 Each transformer has some parameters, a fit method, and a transform method.
 
 Inheritting from base class TransformerMinin, gives them a fit_transform
@@ -45,7 +46,6 @@ import os
 from sklearn.base import BaseEstimator, TransformerMixin
 
 # Authors:  Sara Ranjbar <ranjbar.sara@mayo.edu>
-#           Kyle W. Singleton <singleton.kyle@mayo.edu>
 
 
 class Resampler(BaseEstimator, TransformerMixin):
@@ -66,6 +66,10 @@ class Resampler(BaseEstimator, TransformerMixin):
 
         # interpretor type is decided later based on input
         self.interpolator = None
+
+        # we need to keep track of the baseline spacing
+        # for use in reverse resampler
+        self.originalspacing = None
 
     def _set_interpolator_for_image(self, X):
         # interpolator type depends on input
@@ -91,6 +95,9 @@ class Resampler(BaseEstimator, TransformerMixin):
 
         if isinstance(X, sitk.Image) is False:
             raise ValueError('Resampler input should be a sitkimage instance.')
+
+        # set basespacing
+        self.originalspacing = list(X.GetSpacing())
 
         # Replace any in-plane spacing values of 0 with original image spacing
         self.targetspacing = np.where(self.targetspacing == 0, X.GetSpacing(),
@@ -250,6 +257,10 @@ class Resizer(BaseEstimator, TransformerMixin):
 
         self.fillmode = fillmode
 
+        # will need to keep track of original size for reversing the
+        # process
+        self.originalsize = None
+
     def _crop_array_to_size(self, X):
         """
         Cropping utility used by transform.
@@ -323,9 +334,9 @@ class Resizer(BaseEstimator, TransformerMixin):
             raise ValueError('Resizer input should be a sitk image.')
 
         X_np = sitk.GetArrayFromImage(X).T
-        base_size = X_np.shape
+        self.originalsize = list(X_np.shape)
 
-        if base_size == self.targetsize:
+        if self.originalsize == self.targetsize:
             # do nothing
             return X
 
@@ -426,4 +437,3 @@ class ImageMasker(BaseEstimator, TransformerMixin):
         X_t = sitk.GetImageFromArray(X_np.T)
         X_t.CopyInformation(X)
         return X_t
-
