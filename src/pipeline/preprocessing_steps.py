@@ -19,6 +19,8 @@ MLSIZE = [280, 280, 112]
 
 
 # preprocessing steps when you have a brain mask (prior to feeding into models)
+
+
 image_prep = Pipeline(
     [
         ('resampler', pp.Resampler(MLSPACING)),

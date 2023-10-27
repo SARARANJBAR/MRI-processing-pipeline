@@ -5,3 +5,4 @@ src/__pycache__/
 src/pipeline/__pycache__/
 src/pipeline/config/__pycache__/
 tests/__pycache__/
+src/pipeline/.DS_Store
